@@ -5,26 +5,27 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.todoapp.data.models.TodoData
 
-@Database(entities = [ToDoData::class], version = 1)
+@Database(entities = [TodoData::class], version = 1)
 @TypeConverters(Converter::class)
-abstract class ToDoDatabase : RoomDatabase() {
+abstract class TodoDatabase : RoomDatabase() {
 
-    abstract fun toDoDao(): ToDoDao
+    abstract fun toDoDao(): TodoDao
 
     companion object {
 
         @Volatile
-        private var INSTANCE: ToDoDatabase? = null
+        private var INSTANCE: TodoDatabase? = null
 
-        fun getDatabase(context: Context): ToDoDatabase {
+        fun getDatabase(context: Context): TodoDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {
                 return tempInstance
             }
 
             synchronized(this) {
-                val instance = Room.databaseBuilder(context.applicationContext, ToDoDatabase::class.java, "todo_database").build()
+                val instance = Room.databaseBuilder(context.applicationContext, TodoDatabase::class.java, "todo_database").build()
                 INSTANCE = instance
                 return instance
             }
