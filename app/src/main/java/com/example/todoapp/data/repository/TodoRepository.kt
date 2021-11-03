@@ -2,13 +2,11 @@ package com.example.todoapp.data.repository
 
 import androidx.lifecycle.LiveData
 import com.example.todoapp.data.TodoDao
+import com.example.todoapp.data.TodoDatabase
 import com.example.todoapp.data.models.TodoData
 
-class TodoRepository(private val todoDao: TodoDao) {
-
-    val getAllData: LiveData<List<TodoData>> = todoDao.getAll()
-
+class TodoRepository(val db: TodoDatabase) {
     suspend fun insertData(todoData: TodoData) {
-        todoDao.insertData(todoData)
+        db.toDoDao().insertData(todoData)
     }
 }

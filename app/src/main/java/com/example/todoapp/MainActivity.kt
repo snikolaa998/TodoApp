@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.todoapp.data.TodoDatabase
+import com.example.todoapp.data.repository.TodoRepository
 import com.example.todoapp.viewmodels.TodoViewModel
 import com.example.todoapp.viewmodels.TodoViewModelFactory
 
@@ -18,7 +20,9 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(findNavController(R.id.navHostFragment))
 
-        val viewModelFactory = TodoViewModelFactory(application)
+        val db = TodoDatabase(this)
+        val todoRepo = TodoRepository(db)
+        val viewModelFactory = TodoViewModelFactory(application, todoRepo)
         viewModel = ViewModelProvider(this, viewModelFactory).get(TodoViewModel::class.java)
     }
 
