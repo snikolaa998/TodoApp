@@ -24,6 +24,7 @@ class AddFragment : Fragment(R.layout.fragment_add) {
         super.onViewCreated(view, savedInstanceState)
 
         todoViewModel = (activity as MainActivity).viewModel
+        priorities_spinner.onItemSelectedListener = todoViewModel.listener
 
         setHasOptionsMenu(true)
     }
@@ -34,36 +35,29 @@ class AddFragment : Fragment(R.layout.fragment_add) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_add) {
-
-            val title = title_et.text.toString()
-            val description = description_et.text.toString()
-            val priority = priorities_spinner.selectedItem.toString()
-
-            val validate = verifyDataFromUser(title, description)
-
-            if (validate) {
-                val newData = TodoData(0, title, parsePriority(priority), description)
-                todoViewModel.insertData(newData)
-                Toast.makeText(requireContext(), "Successfully added.", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_addFragment_to_listFragment)
-
-            } else {
-                Toast.makeText(requireContext(), "Please fill all fields.", Toast.LENGTH_SHORT).show()
-            }
+            insertData()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun verifyDataFromUser(title: String, description: String): Boolean {
-        return title.isNotEmpty() && description.isNotEmpty()
-    }
+    private fun insertData() {
+        val title = title_et.text.toString()
+        val description = description_et.text.toString()
+        val priority = priorities_spinner.selectedItem.toString()
 
-    private fun parsePriority(priority: String): Priority {
-        return when(priority) {
-            "High Priority" -> Priority.HIGH
-            "Medium Priority" -> Priority.MEDIUM
-            "Low Priority" -> Priority.LOW
-            else -> Priority.LOW
+        val validate = todoViewModel.verifyDataFromUser(title, description)
+
+        if (validate) {
+            val newData = TodoData(0, title, todoViewModel.parsePriority(priority), description)
+            todoViewModel.insertData(newData)
+            Toast.makeText(requireContext(), "Successfully added.", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_addFragment_to_listFragment)
+
+        } else {
+            Toast.makeText(requireContext(), "Please fill all fields.", Toast.LENGTH_SHORT).show()
         }
     }
+
+
+
 }

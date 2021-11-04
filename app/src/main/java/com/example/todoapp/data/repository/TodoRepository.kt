@@ -9,4 +9,6 @@ class TodoRepository(val db: TodoDatabase) {
     suspend fun insertData(todoData: TodoData) {
         db.toDoDao().insertData(todoData)
     }
+
+    fun getAllData() = db.toDoDao().getAll()
 }
