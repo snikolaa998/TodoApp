@@ -34,7 +34,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         }
 
         todoViewModel.getAllData().observe(viewLifecycleOwner, {
-            todoListAdapter.setData(it)
+            todoListAdapter.todos = it
         })
     }
 
