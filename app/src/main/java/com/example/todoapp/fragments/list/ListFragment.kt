@@ -1,7 +1,9 @@
 package com.example.todoapp.fragments.list
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -42,12 +44,32 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         inflater.inflate(R.menu.list_fragment_menu, menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_delete_all) {
+            deleteAllData()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setupRecyclerView() {
         todoListAdapter = TodoListAdapter()
         recyclerView.apply {
             adapter = todoListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+    }
+
+    private fun deleteAllData() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") {_, _ ->
+            todoViewModel.deleteAll()
+        }
+        builder.setNegativeButton("No") {_, _ ->
+            //Do nothing
+        }
+        builder.setTitle("Delete all todo items")
+        builder.setMessage("Are you sure you want to remove all items?")
+        builder.create().show()
     }
 
 

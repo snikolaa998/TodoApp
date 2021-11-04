@@ -2,6 +2,7 @@ package com.example.todoapp.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "todo_table")
 data class TodoData(
@@ -10,4 +11,4 @@ data class TodoData(
     var title: String,
     var priority: Priority,
     var description: String,
-)
+) : Serializable

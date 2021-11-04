@@ -18,22 +18,38 @@ import com.example.todoapp.data.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TodoViewModel(application: Application, val todoRepository: TodoRepository) : AndroidViewModel(application) {
+class TodoViewModel(application: Application, val todoRepository: TodoRepository) :
+    AndroidViewModel(application) {
 
     private val allTodo: MutableLiveData<List<TodoData>> = MutableLiveData()
 
     //Click listener za item u spineru
     val listener: AdapterView.OnItemSelectedListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            when(position) {
+            when (position) {
                 0 -> {
-                    (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.red))
+                    (parent?.getChildAt(0) as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            application,
+                            R.color.red
+                        )
+                    )
                 }
                 1 -> {
-                    (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.yellow))
+                    (parent?.getChildAt(0) as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            application,
+                            R.color.yellow
+                        )
+                    )
                 }
                 2 -> {
-                    (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.green))
+                    (parent?.getChildAt(0) as TextView).setTextColor(
+                        ContextCompat.getColor(
+                            application,
+                            R.color.green
+                        )
+                    )
                 }
             }
         }
@@ -51,8 +67,26 @@ class TodoViewModel(application: Application, val todoRepository: TodoRepository
         }
     }
 
+    fun updateData(todoData: TodoData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoRepository.updateData(todoData)
+        }
+    }
+
+    fun deleteData(todoData: TodoData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoRepository.deleteData(todoData)
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch(Dispatchers.IO) {
+            todoRepository.deleteAllData()
+        }
+    }
+
     fun parsePriority(priority: String): Priority {
-        return when(priority) {
+        return when (priority) {
             "High Priority" -> Priority.HIGH
             "Medium Priority" -> Priority.MEDIUM
             "Low Priority" -> Priority.LOW
@@ -62,5 +96,13 @@ class TodoViewModel(application: Application, val todoRepository: TodoRepository
 
     fun verifyDataFromUser(title: String, description: String): Boolean {
         return title.isNotEmpty() && description.isNotEmpty()
+    }
+
+    fun parsePriorityToInt(priority: Priority): Int {
+        return when (priority) {
+            Priority.HIGH -> 0
+            Priority.MEDIUM -> 1
+            Priority.LOW -> 2
+        }
     }
 }

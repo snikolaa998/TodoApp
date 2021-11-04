@@ -1,15 +1,18 @@
 package com.example.todoapp.adapters
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
 import com.example.todoapp.data.models.Priority
 import com.example.todoapp.data.models.TodoData
+import com.example.todoapp.fragments.list.ListFragmentDirections
 import kotlinx.android.synthetic.main.row_item.view.*
 
 class TodoListAdapter : RecyclerView.Adapter<TodoListAdapter.TodoViewHolder>() {
@@ -49,6 +52,10 @@ class TodoListAdapter : RecyclerView.Adapter<TodoListAdapter.TodoViewHolder>() {
                 Priority.HIGH -> priority_indicator.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red))
                 Priority.MEDIUM -> priority_indicator.setCardBackgroundColor(ContextCompat.getColor(context, R.color.yellow))
                 Priority.LOW -> priority_indicator.setCardBackgroundColor(ContextCompat.getColor(context, R.color.green))
+            }
+            row_background.setOnClickListener {
+                val action = ListFragmentDirections.actionListFragmentToUpdateFragment(todo)
+                findNavController().navigate(action)
             }
         }
     }
