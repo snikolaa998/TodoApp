@@ -7,11 +7,15 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.MainActivity
 import com.example.todoapp.R
+import com.example.todoapp.adapters.SwipeToDelete
 import com.example.todoapp.adapters.TodoListAdapter
 import com.example.todoapp.viewmodels.TodoViewModel
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_list.*
 
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -62,6 +66,25 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             adapter = todoListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
+        swipeToDelete(recyclerView)
+    }
+
+    private fun swipeToDelete(recyclerView: RecyclerView) {
+        val swipeToDeleteCallback = object : SwipeToDelete() {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val todoItem = todoListAdapter.todos[position]
+                todoViewModel.deleteData(todoItem)
+                Snackbar.make(view!!, "Successfully deleted.", Snackbar.LENGTH_LONG).apply {
+                    setAction("Undo") {
+                        todoViewModel.insertData(todoItem)
+                    }
+                    show()
+                }
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     private fun deleteAllData() {
