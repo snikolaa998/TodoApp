@@ -36,6 +36,11 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         }
 
         todoViewModel.getAllData().observe(viewLifecycleOwner, {
+            if (it.isEmpty()) {
+                showNoData()
+            } else {
+                hideNoData()
+            }
             todoListAdapter.todos = it
         })
     }
@@ -72,5 +77,13 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         builder.create().show()
     }
 
+    private fun showNoData() {
+        no_data_imageView.visibility = View.VISIBLE
+        no_data_textView.visibility = View.VISIBLE
+    }
 
+    private fun hideNoData() {
+        no_data_imageView.visibility = View.INVISIBLE
+        no_data_textView.visibility = View.INVISIBLE
+    }
 }
