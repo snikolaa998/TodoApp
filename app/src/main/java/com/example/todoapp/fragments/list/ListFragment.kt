@@ -8,9 +8,7 @@ import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.example.todoapp.MainActivity
 import com.example.todoapp.R
 import com.example.todoapp.adapters.SwipeToDelete
@@ -101,7 +99,7 @@ class ListFragment : Fragment(R.layout.fragment_list), SearchView.OnQueryTextLis
         todoListAdapter = TodoListAdapter()
         recyclerView.apply {
             adapter = todoListAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             itemAnimator = SlideInUpAnimator().apply {
                 addDuration = 300
             }
