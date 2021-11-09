@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -16,9 +17,10 @@ import com.example.todoapp.adapters.SwipeToDelete
 import com.example.todoapp.adapters.TodoListAdapter
 import com.example.todoapp.viewmodels.TodoViewModel
 import com.google.android.material.snackbar.Snackbar
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import kotlinx.android.synthetic.main.fragment_list.*
 
-class ListFragment : Fragment(R.layout.fragment_list) {
+class ListFragment : Fragment(R.layout.fragment_list), SearchView.OnQueryTextListener {
 
     lateinit var todoListAdapter: TodoListAdapter
     lateinit var todoViewModel: TodoViewModel
@@ -51,13 +53,48 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.list_fragment_menu, menu)
+        val search = menu.findItem(R.id.menu_search)
+        val searchView = search.actionView as? SearchView
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.setOnQueryTextListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_delete_all) {
-            deleteAllData()
+        when(item.itemId) {
+            R.id.menu_delete_all -> deleteAllData()
+            R.id.menu_priority_high -> todoViewModel.getHighPriority().observe(viewLifecycleOwner) {
+                todoListAdapter.todos = it
+            }
+            R.id.menu_priority_low -> todoViewModel.getLowPriority().observe(viewLifecycleOwner) {
+                todoListAdapter.todos = it
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText != null) {
+            searchThroughDatabase(newText)
+        }
+        return true
+    }
+
+    private fun searchThroughDatabase(query: String) {
+        var searchQuery = query
+        searchQuery = "%$searchQuery%"
+
+        todoViewModel.searchDatabase(searchQuery).observe(this) {
+            it?.let {
+               todoListAdapter.todos = it
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -65,6 +102,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         recyclerView.apply {
             adapter = todoListAdapter
             layoutManager = LinearLayoutManager(requireContext())
+            itemAnimator = SlideInUpAnimator().apply {
+                addDuration = 300
+            }
         }
         swipeToDelete(recyclerView)
     }

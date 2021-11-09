@@ -61,6 +61,12 @@ class TodoViewModel(application: Application, val todoRepository: TodoRepository
 
     fun getAllData() = todoRepository.getAllData()
 
+    fun getHighPriority() = todoRepository.getDataSortByHighPriority()
+
+    fun getLowPriority() = todoRepository.getDataSortByLowPriority()
+
+    fun searchDatabase(searchQuery: String) = todoRepository.searchData(searchQuery)
+
     fun insertData(todoData: TodoData) {
         viewModelScope.launch(Dispatchers.IO) {
             todoRepository.insertData(todoData)

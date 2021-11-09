@@ -24,4 +24,10 @@ class TodoRepository(val db: TodoDatabase) {
     }
 
     fun getAllData() = db.toDoDao().getAll()
+
+    fun getDataSortByHighPriority() = db.toDoDao().sortByHighPriority()
+
+    fun getDataSortByLowPriority() = db.toDoDao().sortByLowPriority()
+
+    fun searchData(searchQuery: String) = db.toDoDao().searchDatabase(searchQuery)
 }
